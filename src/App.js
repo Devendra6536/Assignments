@@ -1,66 +1,129 @@
-import React, { Component } from 'react'
-import Plan from './Plan'
+
+import React, { useState } from 'react';
 import './App.css';
-import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
+import Slider from './Slider'
+import SidebarItem from './Property'
 
-class App extends Component {
-  state = {
-    items: [],
-    text: ""
+const DEFAULT_OPTIONS = [
+  {
+    name: 'Brightness',
+    property: 'brightness',
+    value: 100,
+    range: {
+      min: 0,
+      max: 200
+    },
+    unit: '%'
+  },
+  {
+    name: 'Contrast',
+    property: 'contrast',
+    value: 100,
+    range: {
+      min: 0,
+      max: 200
+    },
+    unit: '%'
+  },
+  {
+    name: 'Saturation',
+    property: 'saturate',
+    value: 100,
+    range: {
+      min: 0,
+      max: 200
+    },
+    unit: '%'
+  },
+  {
+    name: 'Grayscale',
+    property: 'grayscale',
+    value: 0,
+    range: {
+      min: 0,
+      max: 100
+    },
+    unit: '%'
+  },
+  {
+    name: 'Sepia',
+    property: 'sepia',
+    value: 0,
+    range: {
+      min: 0,
+      max: 100
+    },
+    unit: '%'
+  },
+  {
+    name: 'Hue Rotate',
+    property: 'hue-rotate',
+    value: 0,
+    range: {
+      min: 0,
+      max: 360
+    },
+    unit: 'deg'
+  },
+  {
+    name: 'Blur',
+    property: 'blur',
+    value: 0,
+    range: {
+      min: 0,
+      max: 20
+    },
+    unit: 'px'
   }
-  handleChange = e => {
-    this.setState({ text: e.target.value })
-  }
-  handleAdd = e => {
-    if (this.state.text !== "") {
-      const items = [...this.state.items, this.state.text];
-      this.setState({ items: items, text: "" });
-    }
-  }
-  handleDelete = id => {
-    console.log("Deleted", id);
-    const Olditems = [...this.state.items]
-    console.log("Olditems", Olditems);
-    const items = Olditems.filter((element, i) => {
-      return i !== id
+]
+
+function App() {
+  const [selectedOptionIndex, setSelectedOptionIndex] = useState(0)
+  const [options, setOptions] = useState(DEFAULT_OPTIONS)
+  const selectedOption = options[selectedOptionIndex]
+
+  function handleSliderChange({ target }) {
+    setOptions(prevOptions => {
+      return prevOptions.map((option, index) => {
+        if (index !== selectedOptionIndex) return option
+        return { ...option, value: target.value }
+      })
     })
-    console.log("Newitems", items);
-    this.setState({ items: items });
   }
-  render() {
-    return (
-      <div className="container-fluid my-5">
-        <div className="row">
-          <div className="col-sm-6 mx-auto text-white shadow-lg p-3">
-            <h2 className="text-center"> Today's Plan </h2>
-            <div className="container-fluid">
-              <div className="row">
-                <div className="col-9">
-                  <input type="text" className="form-control" placeholder="Write Plan Here" value={this.state.text} onChange={this.handleChange} />
-                </div>
-                <div className="col-2">
-                  <button className="btn btn-primary px-5 font-weight-bold" onClick={this.handleAdd}>Add</button>
-                </div>
-              </div>
-              <div className="conatiner">
-                <ul className="list-unstyled row m-5">
-                  {
-                    this.state.items.map((value, i) => {
-                      return <Plan key={i} id={i} value={value} sendData={this.handleDelete} />
-                    })
-                  }
-                </ul>
-                {/* <ul className="list-unstyled row m-5">
-                  <Plan p={this.state.items} sendData={this.handleDelete} />
-                </ul> */}
-              </div>
-            </div>
 
-          </div>
-        </div>
-      </div>
-    )
+  function getImageStyle() {
+    const filters = options.map(option => {
+      return `${option.property}(${option.value}${option.unit})`
+    })
+
+    return { filter: filters.join(' ') }
   }
+
+  console.log(getImageStyle())
+
+  return (
+    <div className="container">
+      <div className="main-image" style={getImageStyle()} />
+      <div className="sidebar">
+        {options.map((option, index) => {
+          return (
+            <SidebarItem
+              key={index}
+              name={option.name}
+              active={index === selectedOptionIndex}
+              handleClick={() => setSelectedOptionIndex(index)}
+            />
+          )
+        })}
+      </div>
+      <Slider
+        min={selectedOption.range.min}
+        max={selectedOption.range.max}
+        value={selectedOption.value}
+        handleChange={handleSliderChange}
+      />
+    </div>
+  )
 }
 
 export default App;
