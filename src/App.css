@@ -34,9 +34,8 @@ body {
 
 .sidebar {
   grid-area: sidebar; 
-  /* background-color: hsl(265, 100%, 86%); */
-  border-left: 2px solid hsl(265, 100%, 56%);
-  border-bottom: 2px solid hsl(265, 100%, 56%);
+  border-top: 2px solid hsl(265, 100%, 56%);
+  /* border-radius: 10px; */
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -57,13 +56,10 @@ body {
   font-weight: 600;
 }
 
-.sidebar-item:hover, .sidebar-item:focus {
-  background-color: hsl(265, 100%, 76%);
-}
+ .sidebar-item:hover, .sidebar-item:focus {
+  margin-left: 10px;
 
-.sidebar-item.active {
-  background-color: hsl(265, 100%, 70%);
-}
+} 
 
 .sidebar-item::after {
   content: '';
@@ -73,6 +69,7 @@ body {
   bottom: 0;
   height: 1px;
   background-color: hsl(265, 100%, 46%);
+  border-radius: 10px;
 }
 
 .sidebar-item:last-child::after {
